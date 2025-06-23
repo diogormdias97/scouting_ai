@@ -1,25 +1,19 @@
-# ai/openai_client.py
 import os
 import openai
+from openai import OpenAI
+from dotenv import load_dotenv
 
-# 1) ler a key do ambiente  (definida nos Secrets do Streamlit)
-openai.api_key = os.getenv("OPENAI_API_KEY")
+load_dotenv()  # carrega a API key se estiver num ficheiro .env
 
-def call_openai(user_prompt: str, system_msg: str) -> str:
-    """
-    Envia o prompt para o ChatCompletion e devolve apenas o conteúdo da resposta.
-    """
-    messages = [
-        {"role": "system", "content": system_msg},
-        {"role": "user",   "content": user_prompt}
-    ]
+client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 
-    resp = openai.ChatCompletion.create(
-        model="gpt-4o-mini",   # usa o modelo que tiveres acesso
-        messages=messages,
-        temperature=0.4,
+def call_openai(user_prompt, system_prompt):
+    response = client.chat.completions.create(
+        model="gpt-4o",  # ou outro que tenhas acesso
+        messages=[
+            {"role": "system", "content": system_prompt},
+            {"role": "user", "content": user_prompt},
+        ],
+        temperature=0.4
     )
-
-    return resp.choices[0].message.content.strip()
-
-
+    return response.choices[0].message.content.strip()
