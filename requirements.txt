@@ -4,3 +4,4 @@ openai
 scikit-learn
 matplotlib
 streamlit
+plotly
