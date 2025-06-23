@@ -49,5 +49,5 @@ st.dataframe(player_data.to_frame(), use_container_width=True)
 # AI Summary
 st.subheader("🧠 AI Report")
 if st.button("Generate Report"):
-    summary = generate_summary(player_data.to_frame().T)
+    summary = generate_summary(player_data.T)
     st.markdown(summary)
