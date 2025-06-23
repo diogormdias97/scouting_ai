@@ -11,6 +11,7 @@ st.title("📋 Player Profile")
 
 # Load data
 df = load_data()
+df.columns = df.columns.str.strip()  # <- limpa espaços nos nomes
 
 # Select player
 player_names = df["Name"].unique().tolist()
@@ -19,7 +20,7 @@ selected_player = st.selectbox("Select a player", player_names)
 # Get player data
 player_data = df[df["Name"] == selected_player].iloc[0]
 
-# FIFA-style attributes (0–20 scale)
+# FIFA-style attributes
 fifa_attributes = ["Pace", "Shooting", "Passing", "Dribbling", "Defending", "Physical"]
 fifa_values = [player_data[attr] for attr in fifa_attributes]
 
@@ -34,12 +35,9 @@ fig = px.line_polar(
 st.plotly_chart(fig, use_container_width=True)
 
 # Game-by-game stats
-st.subheader("📊 Game-by-game Stats")
-games_df = pd.read_csv("data/games.csv")  # assumes this exists
+games_df = pd.read_csv("data/games.csv")
+games_df.columns = games_df.columns.str.strip()  # <- limpa espaços aqui também
 player_games = games_df[games_df["Name"] == selected_player]
-
-fig2 = px.line(player_games, x="Match", y=["Goals", "Assists"], title="Goals & Assists per Match")
-st.plotly_chart(fig2, use_container_width=True)
 
 # Raw attributes
 st.subheader("📌 Raw Attributes")
