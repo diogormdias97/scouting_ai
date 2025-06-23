@@ -13,7 +13,6 @@ attribute_cols = ['Pace', 'Shooting', 'Passing', 'Dribbling', 'Defending',
                   'Physical', 'Vision', 'Composure', 'Ball_Control']
 
 st.title("🎯 AI Player Finder")
-
 st.markdown("Describe the type of player you're looking for, and our AI will recommend the closest match!")
 
 # --- Input do utilizador ---
@@ -54,4 +53,21 @@ if st.button("🔍 Find Player"):
                 player_vals += player_vals[:1]
                 ideal_vals += ideal_vals[:1]
 
-                fig, ax = plt.su
+                fig, ax = plt.subplots(figsize=(6,6), subplot_kw=dict(polar=True))
+                ax.plot(angles, player_vals, linewidth=2, label="Player")
+                ax.fill(angles, player_vals, alpha=0.25)
+                ax.plot(angles, ideal_vals, linewidth=2, linestyle="dashed", label="Ideal")
+                ax.fill(angles, ideal_vals, alpha=0.25)
+                ax.set_xticks(angles[:-1])
+                ax.set_xticklabels(labels)
+                ax.legend(loc="upper right", bbox_to_anchor=(1.1, 1.1))
+                return fig
+
+            player_vals = best_player[attribute_cols].tolist()
+            ideal_vals = [ideal_attributes[attr] for attr in attribute_cols]
+            radar_fig = plot_radar(player_vals, ideal_vals, attribute_cols)
+            st.pyplot(radar_fig)
+
+        except Exception as e:
+            st.error(f"Error interpreting AI response: {e}")
+            st.json(ideal_json)
