@@ -60,12 +60,13 @@ st.subheader("🧠 AI Report")
 
 if st.button("Generate Report"):
     try:
-        summary_input = "\n".join([f"{k}: {v}" for k, v in attribute_values.to_dict().items()])
+        summary_input = "\n".join([
+            f"{attr}: {value}" for attr, value in attribute_values.items()
+        ])
         summary = generate_summary(summary_input)
         st.success("AI summary generated successfully!")
         st.write(summary)
     except Exception as e:
         st.error(f"Error generating AI summary: {e}")
-
 
 
