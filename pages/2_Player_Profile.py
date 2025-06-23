@@ -1,50 +1,80 @@
 import streamlit as st
 import pandas as pd
-import matplotlib.pyplot as plt
 import plotly.express as px
 from utils.data_loader import load_data
 from ai.openai_client import generate_summary
 
 st.set_page_config(page_title="Player Profile", layout="wide")
+st.title("📊 Game-by-game Stats")
 
-st.title("📋 Player Profile")
-
-# Load data
+# Load main player data
 df = load_data()
-df.columns = df.columns.str.strip()  # <- limpa espaços nos nomes
 
-# Select player
+# Carregar dados dos jogos diretamente (sem função utilitária)
+games_df = pd.read_csv("data/games.csv")
+
+# Verifica nomes corretos
+if "Name" not in df.columns or "Name" not in games_df.columns:
+    st.error("Erro: A coluna 'Name' está em falta num dos ficheiros CSV.")
+    st.stop()
+
+# Seleção do jogador
 player_names = df["Name"].unique().tolist()
-selected_player = st.selectbox("Select a player", player_names)
+selected_player = st.selectbox("Select a Player", player_names)
 
-# Get player data
-player_data = df[df["Name"] == selected_player].iloc[0]
+# Subconjunto dos dados do jogador
+player_data = df[df["Name"] == selected_player]
+if player_data.empty:
+    st.warning("Jogador não encontrado nos dados.")
+    st.stop()
 
-# FIFA-style attributes
+player_row = player_data.iloc[0]
+
+# --- ATRIBUTOS FIFA (RADAR CHART) ---
+st.subheader("🧬 Player Attributes")
+
 fifa_attributes = ["Pace", "Shooting", "Passing", "Dribbling", "Defending", "Physical"]
-fifa_values = [player_data[attr] for attr in fifa_attributes]
 
-# Radar chart
-st.subheader("🛡️ Attributes (FIFA-style)")
+# Verificação de atributos existentes
+missing_attrs = [attr for attr in fifa_attributes if attr not in df.columns]
+if missing_attrs:
+    st.error(f"Atributos em falta: {missing_attrs}")
+    st.stop()
+
+fifa_values = [player_row[attr] for attr in fifa_attributes]
+
 fig = px.line_polar(
     r=fifa_values + [fifa_values[0]],
     theta=fifa_attributes + [fifa_attributes[0]],
     line_close=True,
-    title=f"{selected_player} - Skill Radar",
+    title=f"{selected_player} - Skill Radar"
 )
 st.plotly_chart(fig, use_container_width=True)
 
-# Game-by-game stats
-games_df = pd.read_csv("data/games.csv")
-games_df.columns = games_df.columns.str.strip()  # <- limpa espaços aqui também
+# --- ESTATÍSTICAS JOGO A JOGO ---
+st.subheader("📅 Game-by-game Performance")
+
 player_games = games_df[games_df["Name"] == selected_player]
 
-# Raw attributes
-st.subheader("📌 Raw Attributes")
-st.dataframe(player_data.to_frame(), use_container_width=True)
+if not player_games.empty:
+    fig2 = px.line(
+        player_games,
+        x="Match",
+        y=["Goals", "Assists"],
+        title="Goals & Assists per Match"
+    )
+    st.plotly_chart(fig2, use_container_width=True)
+else:
+    st.info("Este jogador ainda não tem estatísticas de jogo.")
 
-# AI Summary
-st.subheader("🧠 AI Report")
+# --- ATRIBUTOS BRUTOS ---
+st.subheader("📋 Full Player Data")
+st.dataframe(player_row.to_frame(), use_container_width=True)
+
+# --- RELATÓRIO POR IA ---
+st.subheader("🤖 AI Report")
 if st.button("Generate Report"):
-    summary = generate_summary(player_data.to_frame().T)
-    st.markdown(summary)
+    with st.spinner("A gerar resumo com IA..."):
+        report = generate_summary(player_row.to_frame().T)
+        st.markdown(report)
+
