@@ -2,72 +2,89 @@ import streamlit as st
 import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
-from ai.openai_client import generate_summary
+import openai
+import os
 
-# Título da página
+# --- Configuração da API ---
+openai.api_key = os.getenv("OPENAI_API_KEY")
+
+# --- Carregar os dados ---
+games_df = pd.read_csv("data/games.csv")
+players_df = pd.read_csv("data/players_data.csv")
+
+# --- Corrigir nomes de colunas (se necessário) ---
+games_df.columns = games_df.columns.str.strip()
+players_df.columns = players_df.columns.str.strip()
+
+# --- Interface ---
 st.title("📊 Game-by-game Stats")
 
-# Leitura do ficheiro CSV
-try:
-    games_df = pd.read_csv("data/games.csv")
-except FileNotFoundError:
-    st.error("O ficheiro 'data/games.csv' não foi encontrado.")
-    st.stop()
-
-# Seletor de jogador
-player_names = games_df['Name'].unique()
+player_column_name = "Name" if "Name" in games_df.columns else games_df.columns[0]
+player_names = games_df[player_column_name].unique()
 selected_player = st.selectbox("Select a Player", player_names)
 
-# Filtrar os dados do jogador selecionado
-player_data = games_df[games_df['Name'] == selected_player]
+# --- Filtrar dados do jogador ---
+player_data = games_df[games_df[player_column_name] == selected_player]
 
-# Mostrar atributos médios
-st.subheader("⚙️ Player Attributes")
-attributes = ['Goals', 'Assists', 'Pace', 'Shooting', 'Passing', 'Dribbling', 'Defending',
-              'Physical', 'Vision', 'Composure', 'Ball_Control']
-attribute_values = player_data[attributes].mean().round(0).astype(int)
-attribute_df = pd.DataFrame(attribute_values, columns=['Value']).reset_index()
-attribute_df.columns = ['Attribute', 'Value']
-st.table(attribute_df)
+# --- Atributos esperados ---
+attributes = [
+    "Shooting", "Passing", "Dribbling", "Defending",
+    "Physical", "Vision", "Composure", "Ball_Control"
+]
 
-# Gráfico Radar
-st.subheader("📈 Radar Chart")
+# --- Verificar atributos existentes ---
+valid_attributes = [attr for attr in attributes if attr in player_data.columns]
+
+# Debug temporário (remover depois de validar)
+# st.write("Colunas disponíveis:", player_data.columns.tolist())
+# st.write("Atributos considerados:", valid_attributes)
+
+# --- Radar chart com médias dos atributos ---
+st.subheader("🧠 Player Attributes")
 try:
-    import plotly.graph_objects as go
+    attribute_values = player_data[valid_attributes].mean().round(0).astype(int)
 
-    fig = go.Figure()
+    fig, ax = plt.subplots(figsize=(6, 6), subplot_kw=dict(polar=True))
+    angles = [n / float(len(valid_attributes)) * 2 * 3.14159 for n in range(len(valid_attributes))]
+    values = attribute_values.tolist()
+    values += values[:1]
+    angles += angles[:1]
 
-    fig.add_trace(go.Scatterpolar(
-        r=attribute_df['Value'],
-        theta=attribute_df['Attribute'],
-        fill='toself',
-        name=selected_player
-    ))
+    ax.plot(angles, values, linewidth=1, linestyle='solid')
+    ax.fill(angles, values, alpha=0.4)
+    ax.set_xticks(angles[:-1])
+    ax.set_xticklabels(valid_attributes)
+    ax.set_title(f"Attributes Radar: {selected_player}")
+    st.pyplot(fig)
 
-    fig.update_layout(
-        polar=dict(
-            radialaxis=dict(visible=True, range=[0, 20])
-        ),
-        showlegend=False
-    )
+except Exception as e:
+    st.error(f"Error loading attributes: {e}")
 
-    st.plotly_chart(fig)
-except ImportError:
-    st.warning("Plotly não está instalado. O gráfico radar não pode ser exibido.")
+# --- Estatísticas por jogo ---
+st.subheader("📈 Game Stats")
+try:
+    st.dataframe(player_data)
 
-# 📄 Relatório com IA
+except Exception as e:
+    st.error(f"Error showing player data: {e}")
+
+# --- Relatório com IA ---
 st.subheader("🧠 AI Report")
-
 if st.button("Generate Report"):
     try:
-        summary_input = "\n".join([
-            f"{attr}: {value}" for attr, value in attribute_values.items()
-        ])
-        summary = generate_summary(summary_input)
-        st.success("AI summary generated successfully!")
-        st.write(summary)
+        prompt = f"Generate a scouting report for player {selected_player} based on the following stats:\n\n{player_data.to_string(index=False)}"
+        response = openai.ChatCompletion.create(
+            model="gpt-4",
+            messages=[{"role": "user", "content": prompt}],
+            temperature=0.7
+        )
+        summary = response.choices[0].message["content"]
+        st.markdown(summary)
+
     except Exception as e:
         st.error(f"Error generating AI summary: {e}")
+        
+
         
 
 
