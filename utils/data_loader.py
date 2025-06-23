@@ -1,6 +1,15 @@
 import pandas as pd
-import streamlit as st
 
-@st.cache_data
 def load_data():
-    return pd.read_csv("data/players_data.csv")
+    """
+    Carrega os dados dos jogadores a partir do ficheiro CSV.
+    Retorna um DataFrame do pandas.
+    """
+    try:
+        df = pd.read_csv("data/players_data.csv")
+        return df
+    except FileNotFoundError:
+        raise FileNotFoundError("O ficheiro 'players_data.csv' não foi encontrado na pasta 'data/'.")
+    except Exception as e:
+        raise RuntimeError(f"Ocorreu um erro ao carregar os dados dos jogadores: {e}")
+
