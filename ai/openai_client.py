@@ -14,3 +14,4 @@ def call_openai(prompt, system_msg):
     )
 
     return response.choices[0].message["content"]
+
