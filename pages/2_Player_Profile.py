@@ -68,5 +68,6 @@ if st.button("Generate Report"):
         st.write(summary)
     except Exception as e:
         st.error(f"Error generating AI summary: {e}")
+        
 
 
