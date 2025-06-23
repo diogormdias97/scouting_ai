@@ -8,7 +8,7 @@ from math import pi
 from ai.openai_client import call_openai
 
 # --- Carregar dados ---
-players_df = pd.read_csv("data/players_datav.csv")
+players_df = pd.read_csv("data/players_data.csv")
 attribute_cols = ['Pace', 'Shooting', 'Passing', 'Dribbling', 'Defending',
                   'Physical', 'Vision', 'Composure', 'Ball_Control']
 
