@@ -19,7 +19,7 @@ player_names = games_df['Name'].unique()
 selected_player = st.selectbox("Select a Player", player_names)
 
 # Filtrar os dados do jogador selecionado
-player_data = games_df[games_df['Player'] == selected_player]
+player_data = games_df[games_df['Name'] == selected_player]
 
 # Mostrar atributos médios
 st.subheader("⚙️ Player Attributes")
