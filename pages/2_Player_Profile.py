@@ -15,7 +15,7 @@ except FileNotFoundError:
     st.stop()
 
 # Seletor de jogador
-player_names = games_df['Player'].unique()
+player_names = games_df['Name'].unique()
 selected_player = st.selectbox("Select a Player", player_names)
 
 # Filtrar os dados do jogador selecionado
