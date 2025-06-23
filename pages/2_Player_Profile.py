@@ -1,86 +1,69 @@
 import streamlit as st
 import pandas as pd
 import matplotlib.pyplot as plt
-import seaborn as plt
-import openai
-import os
 
-# --- Configuração da API ---
-openai.api_key = os.getenv("OPENAI_API_KEY")
-
-# --- Carregar os dados ---
-games_df = pd.read_csv("data/games.csv")
+# Carregar dados
 players_df = pd.read_csv("data/players_data.csv")
+games_df = pd.read_csv("data/games.csv")
 
-# Corrigir espaços nos nomes das colunas
-games_df.columns = games_df.columns.str.strip()
-players_df.columns = players_df.columns.str.strip()
+# Garantir que as colunas têm os nomes corretos (case sensitive)
+if "Name" not in players_df.columns or "Name" not in games_df.columns:
+    st.error("Coluna 'Name' não encontrada. Verifica o nome exato no CSV.")
+    st.stop()
 
-# --- Interface ---
+# Sidebar: seleção de jogador
+selected_player = st.selectbox("Select a Player", players_df["Name"].unique())
+
+# Separador principal
 st.title("📊 Game-by-game Stats")
 
-# Selecionar jogador com base nos nomes do ficheiro de jogos
-player_column_name = "Name" if "Name" in games_df.columns else games_df.columns[0]
-player_names = games_df[player_column_name].unique()
-selected_player = st.selectbox("Select a Player", player_names)
+# Player Attributes
+st.markdown("### ⚙️ Player Attributes")
 
-# --- Filtrar dados por jogo ---
-player_game_data = games_df[games_df[player_column_name] == selected_player]
+# Filtrar jogador
+player_row = players_df[players_df["Name"] == selected_player]
 
-# --- Game Stats ---
-st.subheader("📈 Game Stats")
-if player_game_data.empty:
-    st.warning("No game data found for this player.")
+if player_row.empty:
+    st.warning("Jogador não encontrado nos dados.")
 else:
-    st.dataframe(player_game_data)
+    st.write("**Age:**", int(player_row["Age"].values[0]))
+    st.write("**Club:**", player_row["Club"].values[0])
+    st.write("**Position:**", player_row["Position"].values[0])
 
-# --- Atributos individuais do jogador (players_data.csv) ---
-st.subheader("⚙️ Player Attributes")
+    # Mostrar atributos técnicos (excluindo colunas não numéricas)
+    attribute_cols = [
+        "Goals", "Assists", "Pace", "Shooting", "Passing", "Dribbling",
+        "Defending", "Physical", "Vision", "Composure", "Ball_Control"
+    ]
+    attributes = player_row[attribute_cols].values.flatten()
 
-# Procurar no players_df os atributos do jogador
-player_profile = players_df[players_df["Name"] == selected_player]
-
-# Lista de atributos esperados
-attributes = [
-    "Shooting", "Passing", "Dribbling", "Defending",
-    "Physical", "Vision", "Composure", "Ball_Control"
-]
-
-# Verifica se o jogador existe no ficheiro de atributos
-if not player_profile.empty:
-    valid_attributes = [attr for attr in attributes if attr in player_profile.columns]
-    attribute_values = player_profile[valid_attributes].iloc[0].astype(int)
-
-    fig, ax = plt.subplots(figsize=(6, 6), subplot_kw=dict(polar=True))
-    angles = [n / float(len(valid_attributes)) * 2 * 3.14159 for n in range(len(valid_attributes))]
-    values = attribute_values.tolist()
-    values += values[:1]
-    angles += angles[:1]
-
-    ax.plot(angles, values, linewidth=1, linestyle='solid')
-    ax.fill(angles, values, alpha=0.4)
-    ax.set_xticks(angles[:-1])
-    ax.set_xticklabels(valid_attributes)
-    ax.set_title(f"Attributes Radar: {selected_player}")
+    fig, ax = plt.subplots()
+    ax.barh(attribute_cols, attributes)
+    ax.invert_yaxis()
+    ax.set_xlabel("Attribute Score")
+    ax.set_title(f"Attributes for {selected_player}")
     st.pyplot(fig)
+
+# Player Game Stats
+st.markdown("### 📅 Game Stats")
+
+# Filtrar jogos por jogador
+player_games = games_df[games_df["Name"] == selected_player]
+
+if player_games.empty:
+    st.info("Sem dados de jogo para este jogador.")
 else:
-    st.warning("Player not found in attributes file.")
+    st.dataframe(player_games)
 
-# --- Relatório com IA ---
-st.subheader("🧠 AI Report")
-if st.button("Generate Report"):
-    try:
-        prompt = f"Generate a scouting report for player {selected_player} based on the following stats:\n\n{player_game_data.to_string(index=False)}"
-        response = openai.ChatCompletion.create(
-            model="gpt-4",
-            messages=[{"role": "user", "content": prompt}],
-            temperature=0.7
-        )
-        summary = response.choices[0].message["content"]
-        st.markdown(summary)
-
-    except Exception as e:
-        st.error(f"Error generating AI summary: {e}")
+    # Gráfico de golos por jogo
+    fig, ax = plt.subplots()
+    ax.plot(player_games["Match"], player_games["Goals"], marker='o', label="Goals")
+    ax.plot(player_games["Match"], player_games["Assists"], marker='s', label="Assists")
+    ax.set_title(f"Performance por Jogo - {selected_player}")
+    ax.set_xlabel("Match")
+    ax.set_ylabel("Count")
+    ax.legend()
+    st.pyplot(fig)
 
         
 
