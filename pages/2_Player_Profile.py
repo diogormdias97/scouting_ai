@@ -2,68 +2,78 @@ import streamlit as st
 import pandas as pd
 import matplotlib.pyplot as plt
 
-# Carregar dados
-players_df = pd.read_csv("data/players_data.csv")
-games_df = pd.read_csv("data/games.csv")
-
-# Garantir que as colunas têm os nomes corretos (case sensitive)
-if "Name" not in players_df.columns or "Name" not in games_df.columns:
-    st.error("Coluna 'Name' não encontrada. Verifica o nome exato no CSV.")
+# Carregar os dados
+try:
+    players_df = pd.read_csv("data/players_data.csv")
+    games_df = pd.read_csv("data/games.csv")
+except Exception as e:
+    st.error(f"Erro ao carregar ficheiros CSV: {e}")
     st.stop()
 
-# Sidebar: seleção de jogador
-selected_player = st.selectbox("Select a Player", players_df["Name"].unique())
+# Verifica colunas obrigatórias
+expected_players_cols = {"Name", "Age", "Club", "Position", "Goals", "Assists", "Pace", "Shooting", "Passing", "Dribbling", "Defending", "Physical", "Vision", "Composure", "Ball_Control"}
+expected_games_cols = {"Name", "Match", "Goals", "Assists", "Minutes"}
 
-# Separador principal
+missing_p_cols = expected_players_cols - set(players_df.columns)
+missing_g_cols = expected_games_cols - set(games_df.columns)
+
+if missing_p_cols:
+    st.error(f"Colunas em falta no players_data.csv: {missing_p_cols}")
+    st.stop()
+
+if missing_g_cols:
+    st.error(f"Colunas em falta no games.csv: {missing_g_cols}")
+    st.stop()
+
+# Interface
 st.title("📊 Game-by-game Stats")
-
-# Player Attributes
+selected_player = st.selectbox("Select a Player", players_df["Name"].unique())
 st.markdown("### ⚙️ Player Attributes")
 
-# Filtrar jogador
-player_row = players_df[players_df["Name"] == selected_player]
+# Extrair dados do jogador
+player_data = players_df[players_df["Name"] == selected_player]
+if player_data.empty:
+    st.warning("Jogador não encontrado.")
+    st.stop()
 
-if player_row.empty:
-    st.warning("Jogador não encontrado nos dados.")
-else:
-    st.write("**Age:**", int(player_row["Age"].values[0]))
-    st.write("**Club:**", player_row["Club"].values[0])
-    st.write("**Position:**", player_row["Position"].values[0])
+# Mostrar info
+st.write("**Age:**", int(player_data["Age"].values[0]))
+st.write("**Club:**", player_data["Club"].values[0])
+st.write("**Position:**", player_data["Position"].values[0])
 
-    # Mostrar atributos técnicos (excluindo colunas não numéricas)
-    attribute_cols = [
-        "Goals", "Assists", "Pace", "Shooting", "Passing", "Dribbling",
-        "Defending", "Physical", "Vision", "Composure", "Ball_Control"
-    ]
-    attributes = player_row[attribute_cols].values.flatten()
+# Atributos
+attributes = [
+    "Goals", "Assists", "Pace", "Shooting", "Passing", "Dribbling",
+    "Defending", "Physical", "Vision", "Composure", "Ball_Control"
+]
 
-    fig, ax = plt.subplots()
-    ax.barh(attribute_cols, attributes)
-    ax.invert_yaxis()
-    ax.set_xlabel("Attribute Score")
-    ax.set_title(f"Attributes for {selected_player}")
-    st.pyplot(fig)
+attribute_values = player_data[attributes].values.flatten()
 
-# Player Game Stats
+# Bar chart
+fig, ax = plt.subplots()
+ax.barh(attributes, attribute_values)
+ax.set_title(f"Atributos de {selected_player}")
+ax.invert_yaxis()
+st.pyplot(fig)
+
+# Dados de jogo
 st.markdown("### 📅 Game Stats")
+player_game_data = games_df[games_df["Name"] == selected_player]
 
-# Filtrar jogos por jogador
-player_games = games_df[games_df["Name"] == selected_player]
-
-if player_games.empty:
-    st.info("Sem dados de jogo para este jogador.")
+if player_game_data.empty:
+    st.info("Sem jogos para este jogador.")
 else:
-    st.dataframe(player_games)
+    st.dataframe(player_game_data)
 
-    # Gráfico de golos por jogo
-    fig, ax = plt.subplots()
-    ax.plot(player_games["Match"], player_games["Goals"], marker='o', label="Goals")
-    ax.plot(player_games["Match"], player_games["Assists"], marker='s', label="Assists")
-    ax.set_title(f"Performance por Jogo - {selected_player}")
-    ax.set_xlabel("Match")
-    ax.set_ylabel("Count")
-    ax.legend()
-    st.pyplot(fig)
+    # Gráfico linha
+    fig2, ax2 = plt.subplots()
+    ax2.plot(player_game_data["Match"], player_game_data["Goals"], marker='o', label="Goals")
+    ax2.plot(player_game_data["Match"], player_game_data["Assists"], marker='s', label="Assists")
+    ax2.set_title(f"Desempenho por Jogo - {selected_player}")
+    ax2.set_xlabel("Match")
+    ax2.set_ylabel("Contagem")
+    ax2.legend()
+    st.pyplot(fig2)
 
         
 
