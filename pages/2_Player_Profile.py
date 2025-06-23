@@ -1,80 +1,52 @@
 import streamlit as st
 import pandas as pd
 import matplotlib.pyplot as plt
+import plotly.express as px
+from utils.data_loader import load_data
+from ai.openai_client import generate_summary
 
-# Carregar os dados
-try:
-    players_df = pd.read_csv("data/players_data.csv")
-    games_df = pd.read_csv("data/games.csv")
-except Exception as e:
-    st.error(f"Erro ao carregar ficheiros CSV: {e}")
-    st.stop()
+st.set_page_config(page_title="Player Profile", layout="wide")
 
-# Verifica colunas obrigatórias
-expected_players_cols = {"Name", "Age", "Club", "Position", "Goals", "Assists", "Pace", "Shooting", "Passing", "Dribbling", "Defending", "Physical", "Vision", "Composure", "Ball_Control"}
-expected_games_cols = {"Name", "Match", "Goals", "Assists", "Minutes"}
+st.title("📋 Player Profile")
 
-missing_p_cols = expected_players_cols - set(players_df.columns)
-missing_g_cols = expected_games_cols - set(games_df.columns)
+# Load data
+df = load_data()
 
-if missing_p_cols:
-    st.error(f"Colunas em falta no players_data.csv: {missing_p_cols}")
-    st.stop()
+# Select player
+player_names = df["Name"].unique().tolist()
+selected_player = st.selectbox("Select a player", player_names)
 
-if missing_g_cols:
-    st.error(f"Colunas em falta no games.csv: {missing_g_cols}")
-    st.stop()
+# Get player data
+player_data = df[df["Name"] == selected_player].iloc[0]
 
-# Interface
-st.title("📊 Game-by-game Stats")
-selected_player = st.selectbox("Select a Player", players_df["Name"].unique())
-st.markdown("### ⚙️ Player Attributes")
+# FIFA-style attributes (0–20 scale)
+fifa_attributes = ["Pace", "Shooting", "Passing", "Dribbling", "Defending", "Physical"]
+fifa_values = [player_data[attr] for attr in fifa_attributes]
 
-# Extrair dados do jogador
-player_data = players_df[players_df["Name"] == selected_player]
-if player_data.empty:
-    st.warning("Jogador não encontrado.")
-    st.stop()
+# Radar chart
+st.subheader("🛡️ Attributes (FIFA-style)")
+fig = px.line_polar(
+    r=fifa_values + [fifa_values[0]],
+    theta=fifa_attributes + [fifa_attributes[0]],
+    line_close=True,
+    title=f"{selected_player} - Skill Radar",
+)
+st.plotly_chart(fig, use_container_width=True)
 
-# Mostrar info
-st.write("**Age:**", int(player_data["Age"].values[0]))
-st.write("**Club:**", player_data["Club"].values[0])
-st.write("**Position:**", player_data["Position"].values[0])
+# Game-by-game stats
+st.subheader("📊 Game-by-game Stats")
+games_df = pd.read_csv("data/games.csv")  # assumes this exists
+player_games = games_df[games_df["Name"] == selected_player]
 
-# Atributos
-attributes = [
-    "Goals", "Assists", "Pace", "Shooting", "Passing", "Dribbling",
-    "Defending", "Physical", "Vision", "Composure", "Ball_Control"
-]
+fig2 = px.line(player_games, x="Match", y=["Goals", "Assists"], title="Goals & Assists per Match")
+st.plotly_chart(fig2, use_container_width=True)
 
-attribute_values = player_data[attributes].values.flatten()
+# Raw attributes
+st.subheader("📌 Raw Attributes")
+st.dataframe(player_data.to_frame(), use_container_width=True)
 
-# Bar chart
-fig, ax = plt.subplots()
-ax.barh(attributes, attribute_values)
-ax.set_title(f"Atributos de {selected_player}")
-ax.invert_yaxis()
-st.pyplot(fig)
-
-# Dados de jogo
-st.markdown("### 📅 Game Stats")
-player_game_data = games_df[games_df["Name"] == selected_player]
-
-if player_game_data.empty:
-    st.info("Sem jogos para este jogador.")
-else:
-    st.dataframe(player_game_data)
-
-    # Gráfico linha
-    fig2, ax2 = plt.subplots()
-    ax2.plot(player_game_data["Match"], player_game_data["Goals"], marker='o', label="Goals")
-    ax2.plot(player_game_data["Match"], player_game_data["Assists"], marker='s', label="Assists")
-    ax2.set_title(f"Desempenho por Jogo - {selected_player}")
-    ax2.set_xlabel("Match")
-    ax2.set_ylabel("Contagem")
-    ax2.legend()
-    st.pyplot(fig2)
-
-        
-
-
+# AI Summary
+st.subheader("🧠 AI Report")
+if st.button("Generate Report"):
+    summary = generate_summary(player_data.to_frame().T)
+    st.markdown(summary)
