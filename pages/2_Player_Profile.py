@@ -44,7 +44,8 @@ st.subheader("🧠 AI Report")
 if st.button("Generate Report"):
     with st.spinner("Generating summary..."):
         try:
-            summary = generate_summary(player_data[attributes].to_dict())
+            summary_input = "\n".join([f"{k}: {v}" for k, v in player_data[attributes].to_dict().items()])
+summary = generate_summary(summary_input)
             st.success("Report generated:")
             st.write(summary)
         except Exception as e:
