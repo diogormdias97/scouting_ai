@@ -2,82 +2,85 @@ import streamlit as st
 import pandas as pd
 import numpy as np
 import json
-from sklearn.metrics.pairwise import cosine_similarity
 import matplotlib.pyplot as plt
 from math import pi
+from sklearn.metrics.pairwise import cosine_similarity
 from ai.openai_client import call_openai
 
-# Load data
+# === Dados ===
 players_df = pd.read_csv("data/players_data.csv")
 attribute_cols = ['Pace', 'Shooting', 'Passing', 'Dribbling', 'Defending',
                   'Physical', 'Vision', 'Composure', 'Ball_Control']
 
-st.set_page_config(page_title="AI Player Finder", layout="wide")
+# === Página ===
 st.title("🎯 AI Player Finder")
+st.markdown("Describe the type of player you're looking for. Our AI will recommend the best match and show you a comparison.")
 
-st.markdown("Describe the ideal player profile. The AI will match and compare the closest real players.")
+# === Input ===
+user_prompt = st.text_area("🗣️ Describe your ideal player", 
+    "I'm looking for a fast and strong forward, with great dribbling and shooting.")
 
-# Input from user
-user_prompt = st.text_area("🗣️ Describe your ideal player", "Fast winger with strong dribbling and finishing under 17 years old.")
+if st.button("🔍 Find Player"):
+    with st.spinner("🎯 Calling AI and comparing players..."):
 
-if st.button("🔍 Compare Players"):
-    with st.spinner("🧠 Asking AI and comparing attributes..."):
         system_msg = (
-            "You are a football scout assistant. Based on the user's prompt, return a JSON with the ideal values (0–100 scale) for: "
+            "You are a football scout assistant. Based on the user's prompt, "
+            "return a JSON object with numeric values (0-100) for these attributes: "
             "Pace, Shooting, Passing, Dribbling, Defending, Physical, Vision, Composure, Ball_Control. "
-            "Output ONLY the JSON like: {\"Pace\": 90, ...}"
+            "Example: {\"Pace\": 85, \"Shooting\": 80, ..., \"Ball_Control\": 90}. Do not include text, just pure JSON."
         )
-        ideal_json = call_openai(user_prompt, system_msg)
 
         try:
+            ideal_json = call_openai(user_prompt, system_msg)
             ideal_attributes = json.loads(ideal_json)
+
+            if not all(attr in ideal_attributes for attr in attribute_cols):
+                missing = [attr for attr in attribute_cols if attr not in ideal_attributes]
+                st.error(f"⚠️ Missing attributes in AI output: {missing}")
+                st.json(ideal_json)
+                st.stop()
+
             ideal_vector = np.array([ideal_attributes[attr] for attr in attribute_cols]).reshape(1, -1)
             player_vectors = players_df[attribute_cols].values
-
             similarities = cosine_similarity(ideal_vector, player_vectors)[0]
-            players_df["Similarity"] = similarities
+            best_idx = np.argmax(similarities)
+            best_player = players_df.iloc[best_idx]
 
-            top_matches = players_df.sort_values("Similarity", ascending=False).head(5)
-            st.success("✅ Top Matches Found")
-            st.dataframe(top_matches[["Name", "Club", "Age", "Position", "Similarity"] + attribute_cols])
+            st.success(f"🏅 Best match: **{best_player['Name']}** ({best_player['Club']}, {best_player['Age']} yrs)")
 
-            # Show radar charts for top 3
+            # === Radar Chart ===
             def plot_radar(player_vals, ideal_vals, labels, player_name):
                 N = len(labels)
                 angles = [n / float(N) * 2 * pi for n in range(N)]
                 angles += angles[:1]
-                player_vals += player_vals[:1]
-                ideal_vals += ideal_vals[:1]
 
-                fig, ax = plt.subplots(figsize=(5,5), subplot_kw=dict(polar=True))
+                player_vals += [player_vals[0]]
+                ideal_vals += [ideal_vals[0]]
+
+                fig, ax = plt.subplots(figsize=(6,6), subplot_kw=dict(polar=True))
                 ax.plot(angles, player_vals, label=player_name)
-                ax.fill(angles, player_vals, alpha=0.2)
-                ax.plot(angles, ideal_vals, linestyle="dashed", label="Ideal")
-                ax.fill(angles, ideal_vals, alpha=0.2)
+                ax.fill(angles, player_vals, alpha=0.25)
+                ax.plot(angles, ideal_vals, linestyle='dashed', label="Ideal")
+                ax.fill(angles, ideal_vals, alpha=0.25)
                 ax.set_xticks(angles[:-1])
                 ax.set_xticklabels(labels)
-                ax.legend(loc="upper right")
+                ax.legend(loc="upper right", bbox_to_anchor=(1.2, 1.2))
                 return fig
 
-            st.markdown("### 🔍 Visual Attribute Comparison")
+            player_vals = best_player[attribute_cols].tolist()
             ideal_vals = [ideal_attributes[attr] for attr in attribute_cols]
+            radar_fig = plot_radar(player_vals.copy(), ideal_vals.copy(), attribute_cols, best_player['Name'])
+            st.pyplot(radar_fig)
 
-            for _, row in top_matches.iterrows():
-                st.subheader(row["Name"])
-                player_vals = row[attribute_cols].tolist()
-                fig = plot_radar(player_vals, ideal_vals, attribute_cols, row["Name"])
-                st.pyplot(fig)
+            # === Raw output (debugging/curiosidade) ===
+            st.subheader(best_player["Name"])
+            st.markdown("#### Raw AI Output")
+            st.json(ideal_attributes)
 
-            # Attribute Gaps
-            st.markdown("### 🔬 Attribute Differences")
-            for _, row in top_matches.iterrows():
-                st.write(f"**{row['Name']}** - Attribute Gaps:")
-                gaps = {attr: ideal_attributes[attr] - row[attr] for attr in attribute_cols}
-                gaps_df = pd.DataFrame(gaps.items(), columns=["Attribute", "Gap"])
-                st.dataframe(gaps_df.sort_values("Gap", key=abs, ascending=False))
-
+        except json.JSONDecodeError:
+            st.error("❌ The AI did not return valid JSON.")
+            st.text(ideal_json)
         except Exception as e:
             st.error(f"AI response error: {e}")
-            st.text_area("Raw AI Output", ideal_json)
-
+            st.text(ideal_json)
 
