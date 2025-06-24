@@ -2,6 +2,7 @@ import streamlit as st
 import pandas as pd
 import numpy as np
 from ai.openai_client import call_openai_recommendations
+import urllib.parse
 
 # Load player data
 players_df = pd.read_csv("data/players_data.csv")
@@ -20,7 +21,20 @@ if st.button("🔍 Find Player"):
             # Filter candidates only (optional logic, e.g., age < 20)
             recommendation_text = call_openai_recommendations(description, players_df)
 
-            st.markdown("## ✨ AI Recommendation Report")
-            st.markdown(recommendation_text)
+            sst.markdown("## ✨ AI Recommendation Report")
+
+# Divide o texto da IA em linhas e trata cada recomendação
+for i, line in enumerate(recommendation_text.split("\n")):
+    if not line.strip():
+        continue
+
+    # Extrai o nome do jogador (antes do primeiro " - ")
+    name = line.split(" - ")[0].strip()
+    encoded_name = urllib.parse.quote(name)
+    profile_url = f"/Player_Profile?name={encoded_name}"
+
+    # Adiciona o link à linha
+    full_line = f"{line} [🔎 View Profile]({profile_url})"
+    st.markdown(full_line)
         except Exception as e:
             st.error(f"AI response error: {e}")
