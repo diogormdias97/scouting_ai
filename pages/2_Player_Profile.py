@@ -1,7 +1,6 @@
 import streamlit as st
 import pandas as pd
 import plotly.express as px
-import urllib.parse
 
 # Configuração da página
 st.set_page_config(page_title="Player Profile", layout="wide")
@@ -14,6 +13,7 @@ games_df = pd.read_csv("data/games.csv")
 
 # === Seleção de jogador ===
 player_names = players_df["Name"].dropna().unique().tolist()
+selected_player = st.selectbox("Select a player", sorted(player_names))
 
 # === Obter dados do jogador ===
 player_data = players_df[players_df["Name"] == selected_player].iloc[0]
@@ -79,14 +79,4 @@ else:
         st.plotly_chart(fig2, use_container_width=True)
     except Exception as e:
         st.error(f"Erro ao gerar resumo da época: {e}")
-
-# Adiciona suporte a parâmetro de URL
-params = st.query_params
-url_name = params.get("name")
-
-if url_name and url_name in player_names:
-    selected_player = url_name
-else:
-    selected_player = st.selectbox("Select a player", sorted(player_names))
-
 
