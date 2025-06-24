@@ -18,23 +18,23 @@ description = st.text_area("🗣️ Describe your ideal player",
 if st.button("🔍 Find Player"):
     with st.spinner("Asking AI for recommendations..."):
         try:
-            # Filter candidates only (optional logic, e.g., age < 20)
+            # Chamada ao modelo com os jogadores
             recommendation_text = call_openai_recommendations(description, players_df)
 
-            sst.markdown("## ✨ AI Recommendation Report")
+            st.markdown("## ✨ AI Recommendation Report")
 
-# Divide o texto da IA em linhas e trata cada recomendação
-for i, line in enumerate(recommendation_text.split("\n")):
-    if not line.strip():
-        continue
+            # Trata linha a linha a resposta
+            for i, line in enumerate(recommendation_text.split("\n")):
+                if not line.strip():
+                    continue
 
-    # Extrai o nome do jogador (antes do primeiro " - ")
-    name = line.split(" - ")[0].strip()
-    encoded_name = urllib.parse.quote(name)
-    profile_url = f"/Player_Profile?name={encoded_name}"
+                name = line.split(" - ")[0].strip()
+                encoded_name = urllib.parse.quote(name)
+                profile_url = f"/Player_Profile?name={encoded_name}"
 
-    # Adiciona o link à linha
-    full_line = f"{line} [🔎 View Profile]({profile_url})"
-    st.markdown(full_line)
+                full_line = f"{line} [🔎 View Profile]({profile_url})"
+                st.markdown(full_line)
+
         except Exception as e:
             st.error(f"AI response error: {e}")
+
