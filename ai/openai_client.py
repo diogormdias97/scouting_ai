@@ -12,13 +12,18 @@ def call_openai_recommendations(prompt: str, df: pd.DataFrame):
     )
 
     full_prompt = (
-        "You're a football scouting assistant AI. Based on the user request below, recommend 2 players "
-        "from the available list (only players from the list). Use the name **exactly** as written in the list.\n\n"
-        f"User Request:\n{prompt}\n\nAvailable Players:\n{player_list}\n\n"
-        "Return a markdown formatted list with:\n"
-        "1. Name - Description. Strong points: ..., ... 🔎 View Profile\n"
-        "2. Name - Description. Strong points: ..., ... 🔎 View Profile"
-    )
+    "You're a football scouting assistant AI. Based on the user request below, recommend 2 players "
+    "from the available list (only players from the list). Use the name **exactly** as written in the list.\n\n"
+    f"User Request:\n{prompt}\n\nAvailable Players:\n{player_list}\n\n"
+    "For each recommendation, write a detailed paragraph that highlights:\n"
+    "- Their strengths with concrete attributes (e.g. Dribbling: 95, Pace: 90)\n"
+    "- Their potential and how they fit the user description\n"
+    "- Finish with a summary of why they are suitable\n"
+    "- End with: Strong points: ... 🔎 View Profile\n\n"
+    "Output format strictly:\n"
+    "1. Name - Description paragraph... Strong points: ..., ... 🔎 View Profile\n"
+    "2. Name - ..."
+)
 
     response = client.chat.completions.create(
         model="gpt-3.5-turbo",
