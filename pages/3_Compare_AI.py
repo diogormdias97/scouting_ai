@@ -35,6 +35,19 @@ if st.button("🔍 Find Player"):
             if player1 is not None and player2 is not None:
                 st.markdown("## 📊 Talent Evolution Comparison")
 
+                # Calcular médias dos atributos para recomendação
+avg1 = sum([player1[attr] for attr in radar_attributes]) / len(radar_attributes)
+avg2 = sum([player2[attr] for attr in radar_attributes]) / len(radar_attributes)
+
+best_player = player1["Name"] if avg1 >= avg2 else player2["Name"]
+diff = round(abs(avg1 - avg2), 1)
+
+st.markdown(
+    f"Before diving into the radar chart, it's important to highlight that based on the overall technical profile, "
+    f"**{best_player}** has a slightly stronger average attribute score (difference of {diff} points). "
+    f"This suggests a potentially better alignment with the user’s criteria, but both players showcase excellent potential. "
+    f"The following chart offers a side-by-side view of their main skills."
+)
                 radar_attributes = ['Pace', 'Shooting', 'Passing', 'Dribbling', 'Defending', 'Physical', 
                                     'Vision', 'Composure', 'Ball_Control']
 
