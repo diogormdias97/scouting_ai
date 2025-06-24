@@ -2,18 +2,19 @@ import streamlit as st
 from openai import OpenAI
 from urllib.parse import quote
 
-client = OpenAI(api_key=st.secrets["OPENAI_API_KEY"])  # ou usa os.environ.get(...)
+# Pega chave da secret store do Streamlit
+client = OpenAI(api_key=st.secrets["OPENAI_API_KEY"])
 
 def call_openai_recommendations(user_prompt, player_names):
     system_msg = (
-        "You are an AI football scout assistant. Your goal is to recommend 2 or 3 players from the provided list "
+        "You are an AI football scout assistant. Your job is to recommend 2 or 3 players from the provided list "
         "that best match the user's description.\n\n"
-        "Respond ONLY with a short markdown report. For each recommended player, include:\n"
-        "- **Player name**\n"
-        "- Why the player fits the request\n"
-        "- Main strengths based on the attributes\n"
-        "- A link to their profile page in the format: `/Player_Profile?name=Player%20Name` (URL encoded)\n\n"
-        f"Only use players from this list: {', '.join(player_names)}"
+        "For each recommendation, include:\n"
+        "- Player's name\n"
+        "- Explanation of why they fit the profile\n"
+        "- 2-3 strong attributes (based on football qualities)\n"
+        "- A profile link in the format: `/Player_Profile?name=Player%20Name`\n\n"
+        f"Only choose from this list of players: {', '.join(player_names)}"
     )
 
     try:
@@ -29,3 +30,4 @@ def call_openai_recommendations(user_prompt, player_names):
         return response.choices[0].message.content
     except Exception as e:
         return f"AI response error: {e}"
+
