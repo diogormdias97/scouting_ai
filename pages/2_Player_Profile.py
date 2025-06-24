@@ -11,13 +11,13 @@ games_df = pd.read_csv("data/games.csv")
 st.title("🧑‍💼 Player Profile")
 
 # Verifica se há nome na URL
-query_params = st.experimental_get_query_params()
+query_params = st.query_params
 default_name = query_params["name"][0] if "name" in query_params else players_df.iloc[0]["Name"]
 
 # Caixa de seleção de jogador
 selected_name = st.selectbox("Select a player", sorted(players_df["Name"].unique()), index=0)
 if selected_name != default_name:
-    st.experimental_set_query_params(name=urllib.parse.quote(selected_name))
+    st.query_params = {"name": selected_name}
 else:
     selected_name = urllib.parse.unquote(default_name)
 
