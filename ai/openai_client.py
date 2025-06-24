@@ -1,8 +1,9 @@
 import os
-import openai
 import streamlit as st
+from openai import OpenAI
 
-openai.api_key = st.secrets["OPENAI_API_KEY"]  # ou define manualmente com os.environ
+# Inicializar cliente OpenAI
+client = OpenAI(api_key=st.secrets["OPENAI_API_KEY"])  # ou usa os.environ.get(...)
 
 def call_openai_recommendations(user_prompt, player_names):
     system_msg = (
@@ -17,15 +18,13 @@ def call_openai_recommendations(user_prompt, player_names):
         "Only use players from this list: " + ", ".join(player_names)
     )
 
-    messages = [
-        {"role": "system", "content": system_msg},
-        {"role": "user", "content": user_prompt}
-    ]
-
     try:
-        response = openai.ChatCompletion.create(
+        response = client.chat.completions.create(
             model="gpt-3.5-turbo",
-            messages=messages,
+            messages=[
+                {"role": "system", "content": system_msg},
+                {"role": "user", "content": user_prompt}
+            ],
             temperature=0.6,
             max_tokens=900
         )
