@@ -1,59 +1,81 @@
 import streamlit as st
 import pandas as pd
-from utils.data_loader import load_players, load_games
 import plotly.express as px
 
+# Configuração da página
 st.set_page_config(page_title="Player Profile", layout="wide")
 
-players_df = load_players()
-games_df = load_games()
+st.title("👤 Player Profile")
 
-# Obter jogador da sessão
-if "selected_player" not in st.session_state:
-    st.error("No player selected. Go back to Home page.")
-    st.stop()
+# === Carregamento de dados ===
+players_df = pd.read_csv("data/players_data.csv")
+games_df = pd.read_csv("data/games.csv")
 
-player_name = st.session_state.selected_player
-player = players_df[players_df["Name"] == player_name].iloc[0]
-player_games = games_df[games_df["Name"] == player_name]
+# === Seleção de jogador ===
+player_names = players_df["Name"].dropna().unique().tolist()
+selected_player = st.selectbox("Select a player", sorted(player_names))
 
-# Dados principais
-st.title(f"👤 {player['Name']}")
-st.markdown(f"""
-**Position:** {player['Position']} | **Foot:** {player['Foot']}  
-**Age:** {player['Age']} | **Height:** {player['Height_cm']} cm | **Weight:** {player['Weight_kg']} kg
-""")
+# === Obter dados do jogador ===
+player_data = players_df[players_df["Name"] == selected_player].iloc[0]
+player_games = games_df[games_df["Name"] == selected_player]
 
-# Atributos
-attribute_cols = [col for col in players_df.columns if col not in ['Name', 'Age', 'Club', 'Position', 'Foot', 'Height_cm', 'Weight_kg', 'GoalsLast', 'AssistsLast', 'AvgAttribute']]
-avg_rating = player[attribute_cols].mean()
-st.subheader(f"⭐ Average Attribute Rating: {avg_rating:.1f}/100")
+# === Cabeçalho ===
+st.markdown(f"## {selected_player}")
+st.markdown(
+    f"**Position:** {player_data['Position']} | "
+    f"**Foot:** {player_data['Foot']}  \n"
+    f"**Age:** {player_data['Age']} | "
+    f"**Height:** {player_data['Height_cm']} cm | "
+    f"**Weight:** {player_data['Weight_kg']} kg"
+)
 
-fig = px.bar(x=attribute_cols, y=[player[col] for col in attribute_cols], labels={"x": "Attribute", "y": "Score"})
+# === Secção de Atributos ===
+st.markdown("### ⚽ Attributes")
+attributes = ["Pace", "Shooting", "Passing", "Dribbling", "Defending", "Physical",
+              "Vision", "Composure", "Ball_Control"]
+attr_df = pd.DataFrame({
+    "Attribute": attributes + ["Avg_Rating"],
+    "Score": [player_data[a] for a in attributes] + [player_data["Avg_Rating"]]
+})
+fig = px.bar(attr_df, x="Attribute", y="Score", title="Attribute Ratings", range_y=[0, 100])
 st.plotly_chart(fig, use_container_width=True)
 
-# Estatísticas da temporada
-st.subheader("📊 Season Summary")
-season_stats = player_games.agg({
-    "AvgRating": "mean",
-    "Goals": "sum",
-    "Assists": "sum",
-    "YellowCards": "sum",
-    "RedCards": "sum"
-})
+# === Estatísticas gerais ===
+st.markdown("### 📊 General Stats")
+stats = {
+    "Avg Rating": player_data["Avg_Rating"],
+    "Goals (Last Season)": player_data["Goals_Last_Season"],
+    "Assists (Last Season)": player_data["Assists_Last_Season"],
+    "Yellow Cards": player_data["Yellow_Cards"],
+    "Red Cards": player_data["Red_Cards"]
+}
+for stat, val in stats.items():
+    st.markdown(f"- **{stat}:** {val}")
 
-st.markdown(f"""
-- **Average Rating:** {season_stats['AvgRating']:.2f}
-- **Goals:** {int(season_stats['Goals'])}
-- **Assists:** {int(season_stats['Assists'])}
-- **Yellow Cards:** {int(season_stats['YellowCards'])}
-- **Red Cards:** {int(season_stats['RedCards'])}
-""")
+# === Resumo da época ===
+st.markdown("### 📈 Season Summary")
+if player_games.empty:
+    st.warning("No match data available for this player.")
+else:
+    try:
+        season_stats = player_games.agg({
+            "Rating": "mean",
+            "Goals": "sum",
+            "Assists": "sum",
+            "Yellow_Cards": "sum",
+            "Red_Cards": "sum"
+        }).rename({
+            "Rating": "Avg Rating",
+            "Goals": "Goals",
+            "Assists": "Assists",
+            "Yellow_Cards": "Yellow Cards",
+            "Red_Cards": "Red Cards"
+        })
+        st.dataframe(season_stats.to_frame().T, use_container_width=True)
 
-# Tabela de jogos
-st.subheader("📅 Game-by-Game Performance")
-st.dataframe(player_games, use_container_width=True)
-
-# Gráfico de rating por jogo
-fig2 = px.line(player_games, x="MatchID", y="AvgRating", title="Rating per Game")
-st.plotly_chart(fig2, use_container_width=True)
+        # === Gráfico de desempenho por jogo ===
+        st.markdown("#### 📅 Game-by-Game Performance")
+        fig2 = px.line(player_games, x="Match", y="Rating", title="Game Ratings")
+        st.plotly_chart(fig2, use_container_width=True)
+    except Exception as e:
+        st.error(f"Erro ao gerar resumo da época: {e}")
