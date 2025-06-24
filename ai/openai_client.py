@@ -4,7 +4,7 @@ import pandas as pd
 
 client = openai.OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 
-def call_openai_recommendations(prompt: str, df: pd.DataFrame) -> list:
+def call_openai_recommendations(prompt: str, df: pd.DataFrame) -> str:
     player_list = "\n".join(
         f"{row['Name']} ({row['Position']}, Age: {row['Age']}, Club: {row['Club']}, "
         f"Pace: {row['Pace']}, Dribbling: {row['Dribbling']}, Shooting: {row['Shooting']})"
