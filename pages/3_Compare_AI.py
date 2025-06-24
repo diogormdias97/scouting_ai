@@ -51,6 +51,17 @@ if st.button("🔍 Find Player"):
             else:
                 st.warning("One or both players could not be found in the dataset.")
 
+        # Comentário final com base na média
+                avg1 = sum([player1[attr] for attr in radar_attributes]) / len(radar_attributes)
+                avg2 = sum([player2[attr] for attr in radar_attributes]) / len(radar_attributes)
+
+                best_player = player1["Name"] if avg1 >= avg2 else player2["Name"]
+                st.markdown("### 🧠 Final Recommendation")
+                st.markdown(
+                    f"Based on the attribute comparison, **{best_player}** currently shows a slightly stronger profile "
+                    f"and may be the better fit for your criteria. However, both players demonstrate strong potential."
+                )
+
         except Exception as e:
             st.error(f"AI response error: {e}")
 
