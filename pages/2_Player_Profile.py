@@ -1,73 +1,83 @@
 import streamlit as st
 import pandas as pd
-import matplotlib.pyplot as plt
 import plotly.express as px
-import urllib.parse
 
-# Dados
+# Configuração da página
+st.set_page_config(page_title="Player Profile", layout="wide")
+
+st.title("👤 Player Profile")
+
+# === Carregamento de dados ===
 players_df = pd.read_csv("data/players_data.csv")
 games_df = pd.read_csv("data/games.csv")
 
-# Atributos e estatísticas
-attribute_cols = ['Pace', 'Shooting', 'Passing', 'Dribbling', 'Defending',
-                  'Physical', 'Vision', 'Composure', 'Ball_Control', 'Avg_Rating']
-stat_cols = ['Avg_Rating', 'Goals_Last_Season', 'Assists_Last_Season', 'Yellow_Cards', 'Red_Cards']
+# === Seleção de jogador ===
+player_names = players_df["Name"].dropna().unique().tolist()
+selected_player = st.selectbox("Select a player", sorted(player_names))
 
-# 📌 Obter o nome via parâmetro da URL ou dropdown
-params = st.query_params
-selected_name = params.get("name")
+# === Obter dados do jogador ===
+player_data = players_df[players_df["Name"] == selected_player].iloc[0]
+player_games = games_df[games_df["Name"] == selected_player]
 
-if selected_name is None:
-    selected_name = st.selectbox("Select a player", players_df["Name"].tolist())
-else:
-    selected_name = urllib.parse.unquote(selected_name)
-    st.selectbox("Select a player", players_df["Name"].tolist(), index=players_df[players_df["Name"] == selected_name].index[0])
+# === Cabeçalho ===
+st.markdown(f"## {selected_player}")
+st.markdown(
+    f"**Position:** {player_data['Position']} | "
+    f"**Foot:** {player_data['Foot']}  \n"
+    f"**Age:** {player_data['Age']} | "
+    f"**Height:** {player_data['Height_cm']} cm | "
+    f"**Weight:** {player_data['Weight_kg']} kg"
+)
 
-# Filtrar jogador
-player_row = players_df[players_df["Name"] == selected_name].iloc[0]
-
-# Título e info
-st.markdown("## 🧍 Player Profile")
-st.markdown(f"### {player_row['Name']}")
-st.markdown(f"**Position:** {player_row['Position']} | **Foot:** {player_row['Foot']}")
-st.markdown(f"**Age:** {player_row['Age']} | **Height:** {player_row['Height_cm']} cm | **Weight:** {player_row['Weight_kg']} kg")
-
-# Gráfico de atributos
+# === Secção de Atributos ===
 st.markdown("### ⚽ Attributes")
-fig = px.bar(x=attribute_cols, y=[player_row[col] for col in attribute_cols],
-             labels={'x': 'Attribute', 'y': 'Score'},
-             title="Attribute Ratings")
+attributes = ["Pace", "Shooting", "Passing", "Dribbling", "Defending", "Physical",
+              "Vision", "Composure", "Ball_Control"]
+attr_df = pd.DataFrame({
+    "Attribute": attributes + ["Avg_Rating"],
+    "Score": [player_data[a] for a in attributes] + [player_data["Avg_Rating"]]
+})
+fig = px.bar(attr_df, x="Attribute", y="Score", title="Attribute Ratings", range_y=[0, 100])
 st.plotly_chart(fig, use_container_width=True)
 
-# Estatísticas da época anterior
-st.markdown("### 📊 General Statistics")
-stats = {col: player_row[col] for col in stat_cols}
-stats_df = pd.DataFrame(stats.items(), columns=["Statistic", "Value"])
-st.table(stats_df)
+# === Estatísticas gerais ===
+st.markdown("### 📊 General Stats")
+stats = {
+    "Avg Rating": player_data["Avg_Rating"],
+    "Goals (Last Season)": player_data["Goals_Last_Season"],
+    "Assists (Last Season)": player_data["Assists_Last_Season"],
+    "Yellow Cards": player_data["Yellow_Cards"],
+    "Red Cards": player_data["Red_Cards"]
+}
+for stat, val in stats.items():
+    st.markdown(f"- **{stat}:** {val}")
 
-# Resumo da época com base nos jogos
-st.markdown("### 📅 Season Summary")
-player_games = games_df[games_df["Name"] == selected_name]
-
-if not player_games.empty:
-    season_stats = player_games.agg({
-        "Rating": "mean",
-        "Minutes": "sum",
-        "Goals": "sum",
-        "Assists": "sum",
-        "Yellow_Cards": "sum",
-        "Red_Cards": "sum"
-    }).rename({
-        "Rating": "Avg Rating",
-        "Minutes": "Total Minutes",
-        "Goals": "Total Goals",
-        "Assists": "Total Assists",
-        "Yellow_Cards": "Total Yellow Cards",
-        "Red_Cards": "Total Red Cards"
-    })
-
-    st.dataframe(season_stats.to_frame("Value"))
+# === Resumo da época ===
+st.markdown("### 📈 Season Summary")
+if player_games.empty:
+    st.warning("No match data available for this player.")
 else:
-    st.warning("No games registered for this player.")
+    try:
+        season_stats = player_games.agg({
+            "Rating": "mean",
+            "Goals": "sum",
+            "Assists": "sum",
+            "Yellow_Cards": "sum",
+            "Red_Cards": "sum"
+        }).rename({
+            "Rating": "Avg Rating",
+            "Goals": "Goals",
+            "Assists": "Assists",
+            "Yellow_Cards": "Yellow Cards",
+            "Red_Cards": "Red Cards"
+        })
+        st.dataframe(season_stats.to_frame().T, use_container_width=True)
+
+        # === Gráfico de desempenho por jogo ===
+        st.markdown("#### 📅 Game-by-Game Performance")
+        fig2 = px.line(player_games, x="Match", y="Rating", title="Game Ratings")
+        st.plotly_chart(fig2, use_container_width=True)
+    except Exception as e:
+        st.error(f"Erro ao gerar resumo da época: {e}")
 
 
