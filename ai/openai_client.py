@@ -22,9 +22,13 @@ def call_openai_recommendations(prompt: str, df: pd.DataFrame) -> str:
         f"- Their name (from the list)\n"
         f"- A short paragraph justifying the choice\n"
         f"- Their strong points (key attributes)\n"
-        f"- Add a link to their profile in the format: /Player_Profile?name=NAME_WITH_UNDERSCORES\n\n"
-        f"Output format strictly:\n"
-        f"1. Name - Description... Strong points: ... [🔎 View Profile](link)\n"
+        f"- DO NOT include any links.\n"
+f"- Just provide:\n"
+f"  1. The player name\n"
+f"  2. A short paragraph justifying the choice\n"
+f"  3. Their strong points\n\n"
+f"Output format strictly:\n"
+f"1. Name - Description... Strong points: ...\n"
         f"2. ..."
     )
 
