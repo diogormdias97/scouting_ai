@@ -18,8 +18,7 @@ if st.button("🔍 Find Player"):
     with st.spinner("Asking AI for recommendations..."):
         try:
             # Filter candidates only (optional logic, e.g., age < 20)
-            candidates = players_df.to_dict(orient="records")
-            recommendation_text = call_openai_recommendations(description, candidates)
+            recommendation_text = call_openai_recommendations(description, players_df)
 
             st.markdown("## ✨ AI Recommendation Report")
             st.markdown(recommendation_text)
