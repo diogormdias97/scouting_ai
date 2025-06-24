@@ -1,0 +1,151 @@
+Name,Age,Club,Position,Foot,Height_cm,Weight_kg,Pace,Shooting,Passing,Dribbling,Defending,Physical,Vision,Composure,Ball_Control,Avg_Rating,Goals_Last_Season,Assists_Last_Season,Yellow_Cards,Red_Cards
+Rafaela Araújo,17,Boavista U15,GK,Left,170,59,50,54,67,48,61,58,43,50,42,52.6,1,4,5,1
+Francisco Lopes-Sousa,16,Chaves U11,CAM,Left,172,59,50,64,67,84,43,30,60,63,69,58.9,22,15,1,1
+Bryan Guerreiro,15,Rio Ave U10,GK,Left,160,58,47,46,61,67,67,59,62,41,55,56.1,4,4,5,1
+Rúben Matos,15,Boavista U15,CAM,Right,162,53,38,66,93,72,37,41,54,64,58,58.1,16,12,3,1
+Tiago Moreira,15,Famalicão U11,CB,Right,162,53,81,47,52,43,73,76,38,45,61,57.3,0,1,1,0
+Rúben Pinho,10,Sporting U15,CM,Either,155,42,44,57,63,70,62,68,42,62,52,57.8,0,9,0,2
+Vitória Andrade,13,Benfica U9,GK,Right,161,51,37,46,61,58,71,66,40,68,54,55.7,1,4,2,2
+Lucas Gaspar,13,Chaves U11,RB,Left,157,50,76,51,69,43,71,46,44,47,55,55.8,5,2,2,2
+Ângelo Carneiro,12,Belenenses U11,CM,Either,152,52,42,69,77,54,39,52,55,51,50,54.3,0,15,0,0
+Bárbara Tavares,9,Rio Ave U10,ST,Either,148,41,80,76,47,75,49,66,63,66,54,64.0,21,2,2,2
+Diego Freitas,9,Farense U12,RW,Right,145,44,78,67,40,81,30,55,38,35,52,52.9,15,11,3,0
+Teresa Cruz,15,Marítimo U11,RW,Either,161,58,61,49,35,79,49,40,41,41,59,50.4,17,5,5,0
+Manuel Cruz-Araújo,15,Chaves U11,CAM,Either,170,56,44,63,68,78,56,45,44,48,45,54.6,16,14,0,1
+Bernardo Matos-Sá,16,Chaves U11,CB,Right,165,59,50,61,55,58,64,67,51,50,72,58.7,0,1,5,1
+Xavier Gonçalves,11,Gil Vicente U16,ST,Right,151,47,63,70,64,48,47,41,44,42,44,51.4,1,4,5,2
+Ema Assunção,10,Rio Ave U10,LW,Either,154,45,95,78,47,96,56,47,57,52,48,64.0,25,1,2,0
+Eva-Laura Gaspar,13,Boavista U15,CAM,Either,155,52,37,54,97,63,44,47,54,47,58,55.7,20,8,3,1
+Vera Machado,16,Famalicão U11,CDM,Right,167,60,43,35,54,30,76,69,45,57,60,52.1,4,1,1,1
+Petra Brito,9,Sporting U15,ST,Left,144,42,61,62,58,54,35,58,44,44,58,52.7,7,0,5,0
+Letícia Moreira,16,Braga U18,LB,Right,167,59,59,49,78,59,76,43,37,44,44,54.3,3,4,0,2
+Luana Barros,17,Farense U12,CAM,Left,176,61,51,64,58,56,50,55,72,39,63,56.4,3,15,3,1
+Edgar Gomes,17,Vitória SC U18,LB,Either,170,58,55,60,57,65,58,43,49,60,45,54.7,4,4,5,0
+Rafael Leal,13,Braga U18,ST,Left,154,49,50,74,34,56,50,47,40,39,48,48.7,11,2,0,2
+Kevin Alves-Fonseca,13,Vitória SC U18,LB,Right,164,53,92,47,61,61,65,60,53,59,62,62.2,0,4,4,1
+Vasco Magalhães,13,Chaves U11,LW,Right,163,52,66,51,33,61,46,52,39,59,52,51.0,2,12,4,0
+Kyara Fernandes,9,Rio Ave U10,RW,Either,143,40,77,49,50,67,30,49,49,30,51,50.2,1,1,3,0
+Ângela Nunes,18,Belenenses U11,CB,Either,179,64,52,63,54,59,78,78,42,43,58,58.6,3,3,0,2
+Clara Valente-Pereira,13,Gil Vicente U16,GK,Left,161,48,49,55,66,59,51,54,54,45,50,53.7,5,2,0,2
+Daniel Matos-Garcia,11,Vitória SC U18,RB,Right,151,48,97,42,62,58,65,45,40,56,53,57.6,3,2,1,2
+Lia Gonçalves,16,Vitória SC U18,ST,Left,167,59,69,61,58,85,45,34,49,51,52,56.0,20,0,4,1
+Bárbara Leite,12,Chaves U11,CB,Right,158,46,59,47,57,37,83,92,53,48,67,60.3,5,3,2,0
+Miriam Pinheiro,10,Braga U18,LW,Left,150,43,77,64,53,63,57,51,37,49,35,54.0,0,9,4,0
+Leonardo Martins,9,Belenenses U11,ST,Left,148,45,71,61,42,57,47,55,43,53,51,53.3,8,1,5,2
+Erika Valente,18,Farense U12,RB,Right,179,60,72,38,64,56,83,40,74,57,49,59.2,2,4,4,1
+Alexandre do Rodrigues,16,Braga U18,CM,Either,169,60,45,83,91,56,47,48,62,59,51,60.2,1,7,0,1
+Sebastião Simões,10,Boavista U15,LB,Either,155,44,86,39,53,51,50,35,41,58,45,50.9,5,1,5,0
+Letícia Paiva,9,Chaves U11,LB,Left,143,40,66,47,61,52,73,46,54,33,55,54.1,2,3,0,2
+Carlota Pinto,11,Benfica U9,CB,Left,150,50,71,51,62,44,56,60,54,40,61,55.4,0,1,4,2
+Vitória Mendes,11,Estoril U18,ST,Left,152,47,81,71,80,56,51,41,46,38,42,56.2,2,0,4,2
+Sofia Leal,16,Gil Vicente U16,CAM,Right,167,55,34,62,70,64,49,42,53,63,54,54.6,7,15,3,2
+Filipa de Ramos,12,Farense U12,CDM,Left,160,48,41,45,59,49,63,72,32,62,69,54.7,0,3,0,1
+Brian Tavares,12,Porto U15,RB,Left,155,46,51,49,61,68,72,57,47,42,64,56.8,0,1,4,0
+Carminho Cardoso,13,Sporting U15,GK,Right,162,54,71,51,60,51,68,59,32,54,45,54.6,2,3,3,0
+Marcos Figueiredo,9,Gil Vicente U16,RW,Left,144,41,82,51,62,69,52,45,46,54,56,57.4,0,3,0,0
+Vasco Almeida,10,Belenenses U11,CB,Left,155,42,44,51,33,34,73,68,53,52,44,50.2,5,1,5,2
+Vítor Pinheiro,10,Braga U18,GK,Right,149,46,43,52,63,40,53,66,32,50,39,48.7,4,4,3,1
+Denis Branco,16,Marítimo U11,RB,Left,165,55,61,35,59,66,77,51,54,46,50,55.4,0,2,5,0
+Diogo do Fonseca,12,Farense U12,CB,Right,157,49,68,40,64,52,80,48,45,43,56,55.1,1,2,0,1
+Sérgio da Assunção,10,Gil Vicente U16,ST,Right,153,46,74,87,49,52,67,59,56,56,47,60.8,7,4,1,2
+Álvaro Oliveira,10,Benfica U9,CM,Left,149,47,53,62,87,61,64,45,55,35,43,56.1,1,5,5,1
+Eduarda Mendes,18,Rio Ave U10,ST,Right,171,63,96,90,51,56,50,49,61,52,64,63.2,0,3,1,2
+Sandro Moura,10,Boavista U15,GK,Left,154,44,40,40,47,51,60,70,67,49,76,55.6,5,1,1,1
+Daniela Nogueira,18,Benfica U9,CAM,Left,175,58,45,68,68,73,44,52,62,51,50,57.0,0,4,1,0
+Pilar Simões-Vaz,15,Marítimo U11,ST,Right,165,56,74,72,51,70,37,46,30,60,43,53.7,4,1,0,2
+Tiago Santos,11,Marítimo U11,RB,Left,158,47,55,46,49,43,59,30,66,31,43,46.9,1,3,4,1
+Filipa Sousa,16,Vitória SC U18,LW,Either,168,57,48,89,45,62,46,55,48,61,59,57.0,14,2,3,1
+Yasmin do Simões,12,Chaves U11,CM,Right,154,48,62,59,67,61,59,46,46,59,56,57.2,5,2,0,2
+Luísa de Vaz,16,Rio Ave U10,CAM,Right,171,54,48,43,65,73,73,58,41,43,38,53.6,2,3,1,2
+Núria Maia,9,Estoril U18,RB,Either,144,45,80,40,60,65,54,49,32,54,62,55.1,1,1,0,0
+Iara Neves,12,Famalicão U11,LW,Right,159,47,75,78,45,79,64,57,42,57,63,62.2,18,5,5,1
+Gustavo Rodrigues,15,Estoril U18,CB,Either,170,58,53,39,66,59,69,64,38,44,51,53.7,5,4,5,2
+Nair Lourenço,15,Gil Vicente U16,RW,Right,164,56,66,63,42,68,71,63,58,48,48,58.6,3,1,0,1
+Valentina Coelho,10,Benfica U9,CAM,Either,152,45,56,72,71,83,48,60,40,41,43,57.1,11,9,3,1
+Isabela Carvalho,11,Chaves U11,CAM,Left,154,44,54,74,70,65,47,53,50,43,55,56.8,9,0,5,2
+Adriana-Kelly Oliveira,14,Porto U15,ST,Right,167,53,77,65,65,74,39,50,58,36,44,56.4,8,3,3,0
+Bryan Lopes,14,Chaves U11,LW,Right,160,56,81,43,46,61,43,55,55,44,55,53.7,10,12,3,2
+Nair Matos,9,Farense U12,CAM,Right,150,43,55,56,70,70,35,32,44,36,60,50.9,16,15,1,2
+Melissa Domingues-Guerreiro,9,Famalicão U11,RW,Left,144,44,67,67,53,66,44,41,40,53,48,53.2,24,12,0,0
+Leonor Nascimento,9,Farense U12,RW,Either,146,42,80,51,53,62,48,57,55,32,46,53.8,12,1,1,0
+Gaspar Araújo,9,Braga U18,ST,Either,144,45,77,83,78,63,35,34,40,53,62,58.3,1,1,0,0
+Micael Barbosa,15,Boavista U15,CB,Right,162,56,59,62,63,52,71,70,48,39,59,58.1,0,4,0,1
+Denis Pinheiro,12,Vitória SC U18,CAM,Right,157,50,38,51,75,65,50,56,48,70,46,55.4,14,9,1,2
+Yara-Nair Henriques,15,Famalicão U11,CDM,Either,170,58,40,50,62,46,74,65,38,63,51,54.3,1,3,5,2
+Nádia Coelho,14,Boavista U15,CAM,Right,163,54,32,48,70,83,34,56,52,55,40,52.2,0,0,5,2
+Fabiana Ferreira,18,Famalicão U11,CDM,Left,174,64,47,36,59,39,60,44,40,52,34,45.7,0,2,0,2
+Cristiano Barros,16,Famalicão U11,CM,Either,164,54,51,50,69,54,59,43,57,51,30,51.6,2,7,4,1
+Gaspar Mota,10,Farense U12,CM,Either,153,42,48,71,63,52,40,58,72,67,50,57.9,1,3,5,1
+Miguel Vaz,9,Porto U15,LW,Either,144,46,91,57,34,89,45,38,34,67,41,55.1,24,5,2,0
+Nicole-Naiara Tavares,15,Vitória SC U18,LB,Left,165,57,84,72,73,80,67,52,51,48,43,63.3,5,1,5,1
+Enzo Moura,13,Vitória SC U18,ST,Right,158,49,60,66,75,57,48,48,47,37,37,52.8,3,2,1,0
+Francisco Cardoso,16,Marítimo U11,LW,Left,163,60,60,51,33,74,51,41,50,68,49,53.0,12,1,0,0
+André Moreira-Loureiro,13,Braga U18,LW,Right,162,49,64,58,61,63,40,37,62,60,43,54.2,15,7,2,0
+Salomé Nogueira,9,Estoril U18,CDM,Either,143,46,43,61,49,58,62,73,48,54,33,53.4,1,2,4,2
+Guilherme Ramos,16,Rio Ave U10,GK,Either,170,57,31,55,82,41,60,57,43,41,50,51.1,2,1,3,2
+Joana Oliveira,10,Rio Ave U10,ST,Right,151,44,60,46,57,80,51,48,53,41,59,55.0,24,1,4,0
+Isabela Baptista,12,Chaves U11,ST,Right,155,46,81,85,44,69,52,59,46,44,63,60.3,9,3,5,1
+Ema-Jéssica Vaz,10,Braga U18,CAM,Either,149,44,49,63,68,57,63,50,35,57,73,57.2,11,11,3,1
+Gustavo Figueiredo,13,Chaves U11,LB,Either,159,49,74,30,61,39,76,47,41,49,46,51.4,5,2,1,2
+Marcos Vaz-Loureiro,9,Braga U18,ST,Right,148,40,72,71,48,65,59,47,34,55,45,55.1,24,1,1,0
+Kevin do Carneiro,15,Vitória SC U18,RW,Right,160,52,86,85,64,51,43,50,49,45,57,58.9,9,7,2,0
+Daniel Nascimento,18,Chaves U11,ST,Right,172,61,80,68,58,72,40,38,49,61,58,58.2,12,1,4,2
+Kevin Araújo,18,Gil Vicente U16,CDM,Right,169,63,54,50,66,38,67,78,47,49,38,54.1,2,1,2,0
+Letícia Matias-Mendes,15,Vitória SC U18,ST,Either,162,53,78,59,42,51,58,53,55,45,53,54.9,13,3,5,2
+Inês-Beatriz Freitas,15,Braga U18,CAM,Either,167,57,54,53,57,59,55,51,47,56,46,53.1,15,11,2,0
+Noa Carvalho-Garcia,9,Gil Vicente U16,LB,Right,143,43,69,51,73,68,86,42,57,45,42,59.2,3,0,3,1
+Matias Ribeiro,11,Braga U18,LW,Right,150,44,75,55,35,71,68,45,43,56,30,53.1,9,1,5,2
+Inês-Victória Lima,9,Chaves U11,RW,Either,146,41,77,64,47,72,50,41,43,58,46,55.3,21,11,5,1
+António Henriques,15,Vitória SC U18,ST,Either,160,56,73,67,38,71,57,60,50,57,58,59.0,3,2,5,1
+Alexandre Amaral,14,Rio Ave U10,LB,Either,165,54,60,47,66,56,78,46,48,54,65,57.8,2,4,1,2
+Gabriel Rocha,15,Vitória SC U18,ST,Either,165,58,79,60,43,62,47,43,38,71,32,52.8,0,3,5,0
+Jéssica Barbosa-Magalhães,12,Famalicão U11,ST,Either,159,52,76,79,59,59,62,60,50,45,60,61.1,16,1,5,1
+Afonso Moura,13,Porto U15,GK,Left,164,48,51,64,63,60,60,60,38,56,32,53.8,5,3,0,0
+Violeta Guerreiro,15,Belenenses U11,ST,Right,167,54,68,80,48,53,53,64,60,35,54,57.2,9,2,4,1
+Renato Miranda,14,Braga U18,CM,Left,162,50,47,56,80,62,38,56,52,46,48,53.9,5,0,1,1
+Tiago Morais,10,Marítimo U11,RB,Right,155,47,68,51,59,71,98,47,48,39,30,56.8,2,1,5,0
+Gonçalo Carneiro,11,Braga U18,ST,Left,149,50,79,63,30,61,62,46,63,36,48,54.2,15,0,0,1
+Núria Vicente,14,Estoril U18,CB,Either,167,52,60,46,46,43,67,81,44,49,45,53.4,5,1,0,0
+Santiago de Amorim,15,Braga U18,GK,Either,169,55,56,45,81,47,56,75,41,69,52,58.0,0,1,3,1
+Tatiana Jesus,13,Benfica U9,RB,Right,159,53,63,48,82,69,74,73,41,74,44,63.1,4,0,2,1
+Flor Pereira,18,Belenenses U11,CB,Either,172,59,64,41,52,54,81,65,59,42,58,57.3,1,2,5,2
+Alice Branco,13,Belenenses U11,CB,Either,160,52,65,54,49,56,73,73,71,41,57,59.9,1,2,4,1
+Gaspar Gaspar,10,Estoril U18,CDM,Right,151,43,52,40,69,55,59,61,49,67,50,55.8,3,1,4,1
+Lucas Leite,9,Estoril U18,CAM,Either,148,45,51,74,67,51,49,50,46,46,61,55.0,13,2,0,2
+Lourenço Lopes,10,Porto U15,LB,Right,149,45,69,73,62,59,77,30,66,37,45,57.6,5,4,2,2
+Camila do Amorim,16,Braga U18,CB,Right,173,56,52,49,70,36,75,74,53,43,45,55.2,1,0,5,0
+Afonso Miranda,12,Chaves U11,ST,Right,154,47,85,93,46,63,47,43,51,47,43,57.6,2,2,2,2
+António Almeida,14,Vitória SC U18,CAM,Right,162,51,48,63,85,75,58,38,61,50,51,58.8,9,3,4,2
+Eduarda Fernandes,10,Gil Vicente U16,CAM,Right,150,44,48,60,69,54,45,51,71,59,55,56.9,22,14,0,0
+Mauro Barbosa,14,Braga U18,RB,Left,163,50,76,52,53,50,64,65,52,36,39,54.1,2,1,2,0
+Juliana Pires,12,Estoril U18,RW,Left,155,46,75,67,58,92,56,55,51,55,49,62.0,20,10,3,0
+Samuel Azevedo,10,Gil Vicente U16,RB,Left,151,45,64,47,50,65,64,61,39,43,50,53.7,5,4,0,2
+Lia Silva,12,Porto U15,CM,Right,154,49,51,61,62,45,46,33,36,55,49,48.7,5,15,5,2
+Frederico Santos,13,Vitória SC U18,CB,Left,158,52,60,46,66,44,67,84,47,43,53,56.7,5,2,2,0
+Valentina Pinheiro,13,Sporting U15,CB,Either,164,48,58,49,70,64,79,53,56,43,52,58.2,2,0,1,2
+Artur do Monteiro,15,Porto U15,RW,Left,163,56,70,59,30,49,55,53,38,30,44,47.6,21,15,2,1
+Teresa Mendes,9,Chaves U11,CB,Right,152,40,57,51,48,49,67,94,40,51,41,55.3,0,3,3,2
+Caetana-Emma Fernandes,12,Boavista U15,CM,Right,156,48,55,54,59,78,52,30,76,47,57,56.4,1,1,1,1
+Clara de Baptista,13,Belenenses U11,LB,Right,159,54,97,39,65,66,58,42,65,49,53,59.3,5,0,0,1
+Filipe Lopes,11,Benfica U9,CB,Either,157,47,45,64,55,48,69,74,50,54,56,57.2,0,3,1,2
+Mário Amaral,18,Famalicão U11,CAM,Right,171,64,36,63,73,75,59,48,50,60,43,56.3,8,15,1,1
+Xavier Almeida,10,Marítimo U11,RW,Left,151,44,67,52,48,96,47,43,52,40,38,53.7,6,14,0,0
+Jorge Gaspar-Almeida,14,Marítimo U11,RW,Right,167,53,78,57,48,84,33,59,57,47,72,59.4,15,4,1,1
+Yara Simões,18,Boavista U15,LW,Left,179,63,74,54,44,69,51,42,41,38,48,51.2,12,12,5,0
+Luca Tavares,13,Braga U18,CB,Left,160,52,56,60,73,49,80,64,30,39,52,55.9,3,3,4,2
+Leonardo Marques,14,Porto U15,ST,Left,160,52,83,73,62,72,45,60,50,50,59,61.6,1,1,2,1
+Henrique Nunes,14,Boavista U15,CDM,Either,167,54,38,64,68,62,77,58,57,64,54,60.2,1,3,4,2
+Ângelo Tavares,17,Porto U15,LW,Left,168,62,77,69,45,74,50,61,49,59,45,58.8,16,10,5,0
+Gabriel Ribeiro,14,Marítimo U11,LW,Left,164,53,73,76,41,77,43,58,52,53,37,56.7,4,11,5,0
+Mauro do Araújo,12,Boavista U15,LB,Right,157,49,50,62,56,78,85,36,41,54,44,56.2,1,1,5,0
+Tomé Silva,16,Porto U15,RW,Right,164,56,88,62,49,73,55,64,53,46,53,60.3,12,10,3,1
+Luís Branco,10,Farense U12,GK,Left,145,44,47,52,48,42,71,62,41,30,50,49.2,2,2,5,0
+Iara Fernandes,11,Famalicão U11,LW,Right,153,44,76,56,42,73,63,47,58,34,47,55.1,21,7,4,1
+Beatriz Santos,10,Farense U12,LW,Either,154,45,71,64,33,95,43,48,55,50,40,55.4,13,14,1,1
+Ivo Morais,17,Porto U15,RW,Either,167,59,68,58,53,90,55,58,56,54,48,60.0,5,8,0,1
+Helena Lopes,13,Rio Ave U10,LW,Right,158,52,73,69,56,95,47,55,50,60,55,62.2,3,5,4,1
+Gabriel Pinho,12,Benfica U9,GK,Either,155,50,55,55,71,53,73,59,63,59,61,61.0,4,1,0,0
+Catarina Cardoso,10,Belenenses U11,LB,Either,147,44,72,55,54,47,64,44,36,30,31,48.1,4,0,4,2
+Daniel Sá,18,Benfica U9,ST,Right,169,61,75,63,51,54,43,51,60,56,48,55.7,12,0,5,1
+Érica Azevedo,18,Farense U12,CDM,Right,171,61,44,43,54,50,68,66,46,31,50,50.2,0,1,4,1
+Gabriela Correia,10,Belenenses U11,RW,Either,155,44,97,53,60,66,54,54,40,55,42,57.9,11,11,5,2
