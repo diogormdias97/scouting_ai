@@ -1,25 +1,26 @@
+import openai
 import os
-from openai import OpenAI
-from dotenv import load_dotenv
 
-load_dotenv()
+openai.api_key = os.getenv("OPENAI_API_KEY")
 
-client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
+def call_openai_recommendations(user_prompt: str) -> str:
+    system_message = (
+        "You are a football scout assistant. Based on the user's prompt, you must recommend 3 players "
+        "with the highest potential match. For each player, output a recommendation in Markdown format "
+        "including their name, a short paragraph about why they fit, and their profile link using:\n"
+        "`[🔗 View Profile](./Player_Profile?name=NAME)` (replace NAME with the actual name, use %20 for spaces).\n"
+        "End your message directly after the third recommendation. Be concise and professional."
+    )
 
-def call_openai(user_prompt, system_msg):
     messages = [
-        {"role": "system", "content": system_msg},
+        {"role": "system", "content": system_message},
         {"role": "user", "content": user_prompt}
     ]
-    
-    try:
-        response = client.chat.completions.create(
-            model="gpt-3.5-turbo",  # versão gratuita
-            messages=messages,
-            temperature=0.4
-        )
-        return response.choices[0].message.content.strip()
-    
-    except Exception as e:
-        return str(e)
 
+    response = openai.ChatCompletion.create(
+        model="gpt-4",
+        messages=messages,
+        temperature=0.7
+    )
+
+    return response['choices'][0]['message']['content'].strip()
