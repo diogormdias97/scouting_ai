@@ -1,64 +1,55 @@
 import streamlit as st
 import pandas as pd
-import numpy as np
-import re
-import urllib.parse
-import plotly.graph_objects as go
+import plotly.express as px
 from ai.openai_client import call_openai_recommendations
+import urllib.parse
 
+# Load data
 players_df = pd.read_csv("data/players_data.csv")
 
+# UI
 st.title("🎯 AI Player Finder")
 st.markdown("Describe the type of player you're looking for, and our AI will recommend the closest matches!")
 
-description = st.text_area("🗣️ Describe your ideal player", "I'm looking for a fast and agile left winger under 17, with great dribbling and high pace.")
+description = st.text_area("🗣️ Describe your ideal player", 
+    "I'm looking for a fast and agile left winger under 17, with great dribbling and high pace.")
 
 if st.button("🔍 Find Player"):
     with st.spinner("Asking AI for recommendations..."):
         try:
-            ai_response = call_openai_recommendations(description, players_df)
+            # Get AI response
+            recommendation_text, recommended_names = call_openai_recommendations(description, players_df)
+
+            # Show report
             st.markdown("## ✨ AI Recommendation Report")
+            st.markdown(recommendation_text)
 
-            pattern = r"\d+\.\s*(.+?)\s*-\s*(.+?)\s*Strong points:\s*(.+)"
-            matches = re.findall(pattern, ai_response, re.DOTALL)
+            # Find both players in dataframe
+            def get_player_by_name(name):
+                return players_df[players_df["Name"] == name].iloc[0] if name in players_df["Name"].values else None
 
-            recommended_names = []
-            for name, desc, strong in matches:
-                name_clean = name.strip()
-                encoded = urllib.parse.quote(name_clean)
-                st.markdown(f"**{name_clean}** - {desc.strip()} **Strong points:** {strong.strip()} [🔎 View Profile](/Player_Profile?name={encoded})")
-                recommended_names.append(name_clean)
+            player1 = get_player_by_name(recommended_names[0])
+            player2 = get_player_by_name(recommended_names[1])
 
-            # Show radar if 2 valid players matched
-            if len(recommended_names) == 2:
-                player1 = players_df[players_df["Name"] == recommended_names[0]].iloc[0]
-                player2 = players_df[players_df["Name"] == recommended_names[1]].iloc[0]
-                attributes = ["Pace", "Shooting", "Passing", "Dribbling", "Defending", "Physical",
-                              "Vision", "Composure", "Ball_Control"]
-                
-                fig = go.Figure()
+            # Show radar chart if both found
+            if player1 is not None and player2 is not None:
+                st.markdown("## 📊 Talent Evolution Comparison")
 
-                fig.add_trace(go.Scatterpolar(
-                    r=[player1[attr] for attr in attributes],
-                    theta=attributes,
-                    fill='toself',
-                    name=player1["Name"]
-                ))
+                radar_attributes = ['Pace', 'Shooting', 'Passing', 'Dribbling', 'Defending', 'Physical', 
+                                    'Vision', 'Composure', 'Ball_Control']
 
-                fig.add_trace(go.Scatterpolar(
-                    r=[player2[attr] for attr in attributes],
-                    theta=attributes,
-                    fill='toself',
-                    name=player2["Name"]
-                ))
+                radar_df = pd.DataFrame({
+                    'Attribute': radar_attributes,
+                    player1["Name"]: [player1[attr] for attr in radar_attributes],
+                    player2["Name"]: [player2[attr] for attr in radar_attributes]
+                })
 
-                fig.update_layout(
-                    polar=dict(radialaxis=dict(visible=True, range=[0, 100])),
-                    showlegend=True,
-                    title="🧠 Talent Evolution – Attribute Comparison"
-                )
-
+                radar_melted = radar_df.melt(id_vars="Attribute", var_name="Player", value_name="Score")
+                fig = px.line_polar(radar_melted, r='Score', theta='Attribute', color='Player',
+                                    line_close=True, range_r=[0, 100])
                 st.plotly_chart(fig, use_container_width=True)
+            else:
+                st.warning("One or both players could not be found in the dataset.")
 
         except Exception as e:
             st.error(f"AI response error: {e}")
