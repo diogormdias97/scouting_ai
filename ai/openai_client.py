@@ -6,7 +6,6 @@ import pandas as pd
 client = openai.OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 
 def call_openai_recommendations(prompt: str, df: pd.DataFrame) -> str:
-    # Constrói uma string com os jogadores para ajudar o modelo a escolher
     player_list = "\n".join(
         f"{row['Name']} ({row['Position']}, Age: {row['Age']}, Club: {row['Club']}, "
         f"Pace: {row['Pace']}, Dribbling: {row['Dribbling']}, Shooting: {row['Shooting']})"
@@ -22,13 +21,10 @@ def call_openai_recommendations(prompt: str, df: pd.DataFrame) -> str:
         f"- Their name (from the list)\n"
         f"- A short paragraph justifying the choice\n"
         f"- Their strong points (key attributes)\n"
-        f"- DO NOT include any links.\n"
-f"- Just provide:\n"
-f"  1. The player name\n"
-f"  2. A short paragraph justifying the choice\n"
-f"  3. Their strong points\n\n"
-f"Output format strictly:\n"
-f"1. Name - Description... Strong points: ...\n"
+        f"- A short paragraph forecasting the player's future evolution based on their current attributes and age\n"
+        f"- Add a link to their profile in the format: /Player_Profile?name=NAME_WITH_UNDERSCORES\n\n"
+        f"Output format strictly:\n"
+        f"1. Name - Description... Strong points: ... Forecast: ... [🔎 View Profile](link)\n"
         f"2. ..."
     )
 
@@ -39,7 +35,7 @@ f"1. Name - Description... Strong points: ...\n"
             {"role": "user", "content": full_prompt}
         ],
         temperature=0.7,
-        max_tokens=700
+        max_tokens=1000
     )
 
     return response.choices[0].message.content.strip()
