@@ -1,33 +1,34 @@
+import os
 import openai
-import json
-import streamlit as st 
+import streamlit as st
 
-openai.api_key = st.secrets["OPENAI_API_KEY"]  # ou define manualmente
+openai.api_key = st.secrets["OPENAI_API_KEY"]  # ou define manualmente com os.environ
 
-def call_openai_recommendations(user_prompt, players_df):
-    attribute_cols = ['Pace', 'Shooting', 'Passing', 'Dribbling', 'Defending',
-                      'Physical', 'Vision', 'Composure', 'Ball_Control']
-
+def call_openai_recommendations(user_prompt, player_names):
     system_msg = (
-        "És um olheiro de futebol. Com base na descrição fornecida, "
-        "seleciona 2 ou 3 jogadores do dataset (com os nomes disponíveis na lista JSON abaixo) "
-        "que melhor se adequem ao perfil pretendido. "
-        "Usa apenas os nomes fornecidos e escreve um relatório com recomendações detalhadas.\n\n"
-        "Formato de resposta obrigatório:\n"
-        "[\n"
-        "  {\"name\": \"Nome1\", \"reason\": \"Explica por que este jogador é recomendado.\"},\n"
-        "  {\"name\": \"Nome2\", \"reason\": \"...\"}\n"
-        "]\n\n"
-        "Lista de jogadores disponíveis:\n" + json.dumps(players_df['Name'].tolist())
+        "You are an AI football analyst. Your task is to suggest 2 or 3 players from the provided list "
+        "who best match the user's description. For each recommendation, explain:\n"
+        "- Why the player fits the prompt;\n"
+        "- Their main strengths (based on attributes);\n"
+        "- A short summary of their profile.\n"
+        "Respond in markdown format using bullet points. Each player should be presented like this:\n"
+        "**Player Name**: short explanation.\n"
+        "Include `[🔍 View Profile](link)` where `link` is `/Player_Profile?name=Player%20Name`\n"
+        "Only use players from this list: " + ", ".join(player_names)
     )
 
-    response = openai.chat.completions.create(
-        model="gpt-3.5-turbo",
-        messages=[
-            {"role": "system", "content": system_msg},
-            {"role": "user", "content": user_prompt}
-        ],
-        temperature=0.6
-    )
+    messages = [
+        {"role": "system", "content": system_msg},
+        {"role": "user", "content": user_prompt}
+    ]
 
-    return response.choices[0].message.content
+    try:
+        response = openai.ChatCompletion.create(
+            model="gpt-3.5-turbo",
+            messages=messages,
+            temperature=0.6,
+            max_tokens=900
+        )
+        return response.choices[0].message.content.strip()
+    except Exception as e:
+        return f"AI response error: {e}"
